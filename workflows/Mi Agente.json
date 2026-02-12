@@ -1,0 +1,118 @@
+{
+  "name": "Mi Agente",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f4a88028-5549-4d68-a1fc-027ba32a71c6",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "40a2bbfc-a358-4f5e-b195-4a5d94a341f7",
+              "name": "telefono",
+              "value": "1234567890",
+              "type": "string"
+            },
+            {
+              "id": "7106564f-fa36-49cb-a398-540f18ded65b",
+              "name": "mensaje",
+              "value": "hola",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "4becbbfa-5248-4ed9-b2e9-318f14115abb",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://mcp-server:4000/ask-ia",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "telefono",
+              "value": "={{$json.telefono}}"
+            },
+            {
+              "name": "mensaje",
+              "value": "={{$json.mensaje}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "00b35b49-3181-4b15-b811-6aa7fa2b3b0b",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "1015fd8c-55eb-4d8c-9fb3-25d129e8cbe9",
+  "meta": {
+    "instanceId": "a60a799663fe64f66955791e687b532744a10ce0232f696edac55238a1045377"
+  },
+  "id": "5mO0lQiORy5zhsuMPNNms",
+  "tags": []
+}

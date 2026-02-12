@@ -1,3 +1,26 @@
-node_modules/ 
+# Node modules
+node_modules/
+
+# Variables de entorno
 .env
-n8n/n8n_data/
+mcp-server/.env
+
+
+# Datos reales de n8n
+.n8n/
+n8n/
+n8n-data/
+
+# Bases de datos locales
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# Logs y cache
+n8nEventLog*
+binaryData/
+cache*
+
+# Sistema
+.DS_Store
+

@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: agente_whatsapp_ia
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres1
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: agente_whatsapp_ia
+      DB_POSTGRESDB_USER: postgres
+      DB_POSTGRESDB_PASSWORD: postgres1
+      DB_POSTGRESDB_SSL: "false"
+    
+    volumes:
+      - n8n-data:/home/node/.n8n
+    depends_on:
+      - postgres
+
+  mcp-server:
+    build: ./mcp-server
+    container_name: mcp-server
+    restart: always
+    ports:
+      - "4000:4000"
+    environment:
+      DB_HOST: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres1
+      DB_NAME: agente_whatsapp_ia
+    depends_on:
+      - postgres
+
+volumes:
+  postgres-data:
+  n8n-data:
