@@ -26,6 +26,11 @@ services:
       DB_POSTGRESDB_USER: postgres
       DB_POSTGRESDB_PASSWORD: postgres1
       DB_POSTGRESDB_SSL: "false"
+
+      WEBHOOK_URL: https://truncately-pugnacious-rocio.ngrok-free.dev
+      N8N_HOST: 0.0.0.0
+      N8N_PORT: 5678
+      N8N_PROTOCOL: http
     
     volumes:
       - n8n-data:/home/node/.n8n
