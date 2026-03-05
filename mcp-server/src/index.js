@@ -24,6 +24,20 @@ app.get("/health", (req, res) => {
 
 app.post("/ask-ia", async (req, res) => {
   try {
+    const body = req.body;
+
+    // Chequeo rápido: si NO hay mensajes o es un estado (statuses)
+    // respondemos 200 OK inmediatamente y terminamos
+    // Esto evita que n8n cree ejecuciones fallidas por estos eventos
+
+    /*const value = body?.entry?.[0]?.changes?.[0]?.value;
+    if (!value?.messages || value?.statuses) {
+      // Es un evento de estado (entregado, leído, etc.) → ignoramos
+      return res.sendStatus(204);  // ← esta línea es la que cambia todo
+    }*/
+
+    // Si llegó aquí → SÍ es un mensaje real del usuario
+
     const { telefono, mensaje } = req.body;
 
     if (!telefono || !mensaje) {
@@ -62,7 +76,11 @@ app.post("/ask-ia", async (req, res) => {
     );
 
     // Llamar IA
+
+    //console.log("Mensaje recibido:", mensaje);  // ← agrega esta línea
     const respuesta = await askGroq(mensaje);
+    //console.log("Respuesta de Groq:", respuesta);  // ← agrega esta también
+   
 
     // Guardar respuesta agente
     await pool.query(
@@ -87,7 +105,12 @@ app.post("/ask-ia", async (req, res) => {
   }
 });
 
-  
+
+
+
+
+
+
 
 
 
