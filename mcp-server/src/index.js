@@ -10,13 +10,23 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+
+
 const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+/*const pool = new Pool({
   host: process.env.DB_HOST || "postgres",
   user: process.env.DB_USER || "postgres",
   password: process.env.DB_PASSWORD || "postgres1",
   database: process.env.DB_NAME || "agente_whatsapp_ia",
   port: 5432,
-});
+}); */
 
 app.get("/health", (req, res) => {
   res.json({ status: "MCP Server OK" });
@@ -105,15 +115,12 @@ app.post("/ask-ia", async (req, res) => {
   }
 });
 
+const PORT = process.env.PORT || 4000;
 
-
-
-
-
-
-
-
-
-app.listen(4000, () => {
-  console.log("Servidor IA corriendo en http://localhost:4000");
+app.listen(PORT, () => {
+  console.log(`Servidor IA corriendo en puerto ${PORT}`);
 });
+
+/*app.listen(4000, () => {
+  console.log("Servidor IA corriendo en http://localhost:4000");
+}); */
