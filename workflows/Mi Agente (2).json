@@ -1,0 +1,297 @@
+{
+  "name": "Mi Agente",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "40a2bbfc-a358-4f5e-b195-4a5d94a341f7",
+              "name": "telefono",
+              "value": "={{ $json.body.entry[0].changes[0].value.messages[0].from || $json.body.entry[0].changes[0].value.contacts[0].wa_id }}",
+              "type": "string"
+            },
+            {
+              "id": "7106564f-fa36-49cb-a398-540f18ded65b",
+              "name": "mensaje",
+              "value": "={{ $json.body.entry[0].changes[0].value.messages[0].text.body }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -944,
+        -304
+      ],
+      "id": "4becbbfa-5248-4ed9-b2e9-318f14115abb",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1136,
+        -304
+      ],
+      "id": "8a09450a-e8b3-4248-b954-a978c08ca59d",
+      "name": "Webhook",
+      "webhookId": "e83b9ce6-9f13-41e5-8fb8-9fe7e12cbcc2"
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "100629693025421",
+        "recipientPhoneNumber": "524121421798",
+        "textBody": "={{ $json.mensaje }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -432,
+        -304
+      ],
+      "id": "68c78ab7-9a1d-454d-96df-58a4ea1de5b4",
+      "name": "Send message",
+      "webhookId": "3936e0ed-430d-424e-b7b9-f8acb7b9b04b",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "xqoEPRRd78cSiNDY",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "02ef258d-d500-4254-8e72-24d9a15a201e",
+              "name": "=telefono ",
+              "value": "={{ $json.entry[0].changes[0].value.contacts[0].wa_id }}",
+              "type": "string"
+            },
+            {
+              "id": "3a993719-3921-4783-8672-9a0af6f57ace",
+              "name": "=mensaje",
+              "value": "={{ $json.respuesta }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -592,
+        -304
+      ],
+      "id": "c6ac349f-5c61-4ef2-9263-2c3cc96bdf66",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.entry[0].changes[0].value.messages[0].text.body.toLowerCase() }}",
+                    "rightValue": "ver catalogo quiero ver catalogo",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "9ab13bc6-f08c-412f-90ec-f7f709380926"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1152,
+        -176
+      ],
+      "id": "4e6a47b9-4950-45a0-94d9-9f8210f1ed8e",
+      "name": "Switch",
+      "retryOnFail": true,
+      "executeOnce": false,
+      "alwaysOutputData": false,
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "100629693025421",
+        "recipientPhoneNumber": "=524612794687",
+        "messageType": "document",
+        "mediaLink": "https://www.fertilab.com.mx/AdminFertilab/Catalogo/file_catalogo/catalogo_servicios_2025.pdf",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1.1,
+      "position": [
+        -1104,
+        -16
+      ],
+      "id": "0aee1122-6902-473d-8e48-b31ace6b485d",
+      "name": "Send message1",
+      "webhookId": "2d3feb7b-d6da-43ad-915a-9cf9bdcdcf33",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "xqoEPRRd78cSiNDY",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://mcp-server:4000/ask-ia",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "telefono",
+              "value": "={{$json.telefono}}"
+            },
+            {
+              "name": "mensaje",
+              "value": "=Eres un asistente oficial y EXCLUSIVO de Fertilidad de Suelos, S. de R.L. de C.V. (Fertilab), ubicado en Poniente 6, Esquina Av. Norte 3 No. 200, Col. Industria, C.P. 38010, Celaya, Guanajuato.\nNUNCA menciones otra empresa ni otra dirección.\nPara cualquier otra cosa responde normal con información de Fertilab.\n\nREGLAS ESTRICTAS:\n1. Responde SOLO con el contenido principal.\n2. NUNCA agregues saludos, despedidas, introducciones ni frases de cortesía.\n3. Máximo 3200 caracteres.\n4. Si supera → resume drásticamente.\n5. Formato limpio: ## títulos, - listas cortas, **negritas** solo si necesario.\n6. Respuesta final: solo texto limpio.\n7. No menciones  la misison de la empresa.\n8. Al primer mensaje solo menciona los servicios, productos, contacto y el un mensaje donde able de que si desea otro servicio ponerse en contacto con atencion al cliente.\n9. Al comienzo del mensaje da una descripcion sencilla y corta de fertilab.\n10. Despues de mandar el primer mensaje de fertilab, escribe la pregunta en que podemos ayudarle?. \n11. En los  servicios solo poner lo siguiente:Análisis de suelo y nutrición\n-Diagnostico fitosanitario\n-Análisis de residuos de  plaguicidas\n-Análisis microbiológicos\n-Análisis integral para la agricultura regenerativa\n12. en el contacto de numero de telefono poner el siguiente: Teléfono: 461 614 7951 y en el correo: atencionaclientes@fertilab.com.mx.\n13. Cuando el cliente pregunte sobre un servicio o infomacion, responder sin el texto generico de fertilab o el medio para contactar.\n\nConsulta del usuario:\n{{ $json.mensaje }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -784,
+        -304
+      ],
+      "id": "00b35b49-3181-4b15-b811-6aa7fa2b3b0b",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "375c973e-9030-43da-ab4d-2e0e62f6a3ee",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a60a799663fe64f66955791e687b532744a10ce0232f696edac55238a1045377"
+  },
+  "id": "5mO0lQiORy5zhsuMPNNms",
+  "tags": []
+}
