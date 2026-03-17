@@ -30,7 +30,7 @@ REGLAS ESTRICTAS:
 12. En el contacto de número de teléfono poner el siguiente: Teléfono: 461 614 7951 y en el correo: atencionaclientes@fertilab.com.mx.
 13. Cuando el cliente pregunte sobre un servicio o información, responder sin el texto genérico de Fertilab o el medio para contactar.`;
   const completion = await client.chat.completions.create({
-    model: "llama-3.1-70b-versatile",
+    model:  "openai/gpt-oss-20b",
     messages: [
       { role: "system", content: systemPrompt },
       { role: "user", content: texto }
