@@ -29,6 +29,9 @@ REGLAS ESTRICTAS:
 - Análisis integral para la agricultura regenerativa
 12. En el contacto de número de teléfono poner el siguiente: Teléfono: 461 614 7951 y en el correo: atencionaclientes@fertilab.com.mx.
 13. Cuando el cliente pregunte sobre un servicio o información, responder sin el texto genérico de Fertilab o el medio para contactar.`;
+
+
+try{   
   const completion = await client.chat.completions.create({
     model:  "openai/gpt-oss-20b",
     messages: [
@@ -40,5 +43,18 @@ REGLAS ESTRICTAS:
     top_p: 0.95,
   });
 
-  return completion.choices[0].message.content;
+  return completion.choices[0]?.message?.content?.trim() 
+      || "Lo siento, hubo un problema al generar la respuesta. Intenta de nuevo.";
+} catch (error) {
+    console.error("Error en Groq:", error.message || error);
+
+    if (error?.response?.status === 429) {
+      return "Demasiadas solicitudes en poco tiempo. Por favor, espera unos minutos e intenta nuevamente.";
+    }
+
+    return "Error temporal con la IA. Intenta de nuevo en unos minutos.";
+  }
 }
+
+
+
